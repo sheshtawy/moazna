@@ -1,26 +1,38 @@
-from moazna.account import Account
+from moazna.accounts import Account
+from moazna.accounts import AccountRepository
 import csv
-from moazna.transaction import Transaction
+# from moazna.transactions import Transaction
+from moazna.transactions import TransactionRepository
 
 class Ledger:
     def __init__(self, datastore):
         self._datastore = datastore
-    
+        self.account_repository = AccountRepository(self._datastore)
+        self.txn_repository = TransactionRepository(self._datastore)
+
     def record_txn(self, amount, payerName, recipientName, date):
         """Record a new txn."""
-        payer = Account.getByName(self._datastore, payerName)
+
+        payer = self.account_repository.getByName(payerName)
         if payer is None:
-            payer = Account(self._datastore, payerName)
-        
-        recipient = Account.getByName(self._datastore, recipientName)
+            payer = self.account_repository.create(payerName)
+
+        recipient = self.account_repository.getByName(recipientName)
         if recipient is None:
-            recipient = Account(self._datastore, recipientName)
+            recipient = self.account_repository.create(recipientName)
 
-        txn = Transaction(self._datastore, amount, payer.name, recipient.name, date)
-        txn.save()
+        txn = self.txn_repository.create(amount, payer.name, recipient.name, date)
 
-    def list_txns(self, accountName, startDate, endDate):
-        return Transaction.list_by_name(self._datastore, accountName)
+        payer.balance -= amount
+        self.account_repository.update(payer)
+
+        recipient.balance -= amount
+        self.account_repository.update(recipient)
+
+        return txn
+
+    # def list_txns(self, accountName, startDate, endDate):
+    #     return self.txn_repository.list(accountName)
 
     def import_txns(self, filePath):
         """Import transactions from a text file."""
@@ -30,10 +42,13 @@ class Ledger:
             for row in csv_reader:
                 self.record_txn(row['amount'], row['payer'], row['recipient'], row['date'])
     
+    def get_account_balance(self, accountName, date):
+        return self.account_repository.getBalance(accountName, date)
+    
     @property
     def accounts(self):
-        return self._datastore.list('accounts')
+        return self.account_repository.list()
     
     @property
     def transactions(self):
-        return self._datastore.list('transactions')
+        return self.txn_repository.list()

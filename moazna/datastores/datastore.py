@@ -2,7 +2,8 @@
 
 import abc
 
-class DataStore(object):
+
+class Datastore:
     """DataStore Abstract class.
 
     The class uses composition to make it easy
@@ -10,29 +11,34 @@ class DataStore(object):
     the application logic
     """
 
+    __metaclass__ = abc.ABCMeta
+
     @abc.abstractmethod
-    def create(self, instance):
+    def create(self, **kwargs):
         """Create an new instance.
 
         :param instance: The instance to be created
+        :returns: python dict representing the created resource
         """
-        raise Exception('Must implelment create method')
+        pass
 
     @abc.abstractmethod
     def retrieve(self, instance_id):
         """Retrieve an existing instance.
 
-        :param instance_id: The id of the instance to be retrieved
+        :param instance_: The id of the instance to be retrieved
+        :returns: python dict representing the retrieved resource
         """
-        raise Exception('Must implelment retrieve method')
+        pass
 
     @abc.abstractmethod
     def update(self, instance):
         """Update and existing instance.
 
         :param instance: The instance to be updated
+        :returns: python dict representing the updated object
         """
-        raise Exception('Must implelment update method')
+        pass
 
     @abc.abstractmethod
     def delete(self, instance_id):
@@ -40,4 +46,4 @@ class DataStore(object):
 
         :param instance_id: The id of the instance to be deleted
         """
-        raise Exception('Must implelment delete method')
+        pass
