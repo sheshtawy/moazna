@@ -83,6 +83,8 @@ class TestAccountRepository(unittest.TestCase):
         updated_account = self.account_repository.update(sample_account)
         self.assertIsInstance(updated_account, Account)
         self.assertEqual(updated_account.balance, 123)
+        accounts = self.account_repository.list()
+        self.assertEqual(len(accounts), 1)
 
     def test_get_balance(self):
         sample_account = self.account_repository.create('mr sample')
