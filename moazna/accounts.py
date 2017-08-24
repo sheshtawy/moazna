@@ -1,14 +1,16 @@
-"""Account class."""
+"""Account classes."""
 from datetime import datetime
 
 DEFAULT_BALANCE = 0.0
 
 
 class Account(object):
+    """A class to perform the account's different logical operations."""
 
     def __init__(self, name, balance):
         self.name = name
         self.balance = balance
+        # balance history is private to be only modified by the internal functions
         self._balance_history = []
         self.update_history(self.balance, datetime.now().strftime('%Y-%m-%d'))
 
@@ -22,26 +24,72 @@ class Account(object):
                     new_key = key[1:]
                 yield new_key, self.__getattribute__(key)
 
+    def __str__(self):
+        return 'name: {0}, balance: {1}, balance_history: {2}'.format(self.name, self.balance, self.balance_history)
+
+    def __repr__(self):
+        return '{0}(name={1}, balance={2})'.format(self.__class__.__name__, self.name, self.balance)
+
     def debit(self, amount):
+        """Increase the account's balance.
+        
+        The account is assumed to be of type 'Personal' according to 
+        this document https://en.wikipedia.org/wiki/Debits_and_credits
+        """
         self.balance += amount
 
     def credit(self, amount):
+        """Decrease the account's balance.
+        
+        The account is assumed to be of type 'Personal' according to 
+        this document https://en.wikipedia.org/wiki/Debits_and_credits
+        """
+
         self.balance -= amount
 
     @classmethod
     def from_dict(cls, data):
+        """Create an Account instance from dict.
+        
+        :param data: Dict containing name, balance and possibly balance_history attrs
+        :returns: Account instance
+        """
+
         instance = cls(data['name'], data['balance'])
         if 'balance_history' in data:
             instance._balance_history = data['balance_history']
         return instance
 
     def update_history(self, balance, date):
-        self._balance_history.append({
-            'date': date,
-            'balance': balance
-        })
+        """Update account's balance history.
+        
+        NOTE: Date granuality is by day
+
+        :param balance: balance amount
+        :param date: date of recording the balance amount
+        """
+        try: 
+            self._balance_history.remove({
+                'date': date,
+                'balance': balance
+            })
+        except ValueError:
+            self._balance_history.append({
+                'date': date,
+                'balance': balance
+            })
+        else:
+            self._balance_history.append({
+                'date': date,
+                'balance': balance
+            })
 
     def get_balance(self, date=None):
+        """Retrieve account's balance in a specific date.
+        
+        :param date: date of the desired balance entry
+        :returns: balance amount if the entry exists, defaults to the current balance
+        """
         if date is not None:
             for entry in self._balance_history:
                 if entry['date'] == date:
@@ -55,6 +103,7 @@ class Account(object):
 
 
 class AccountRepository(object):
+    """A class to help persist accounts in a datastore/database."""
 
     def __init__(self, datastore):
         self._datastore = datastore
@@ -83,7 +132,6 @@ class AccountRepository(object):
     def update(self, instance):
         record = self._datastore.update(
             self.__entity, dict(instance), self.__id_attr)
-        print record
         return Account.from_dict(record)
 
     def delete(self, instance):

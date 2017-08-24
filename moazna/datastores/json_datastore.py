@@ -29,6 +29,7 @@ class JsonDatastore(datastore.Datastore):
             elem = self.retrieve(entity, id_attr, instance[id_attr])
 
             if elem is not None:
+                entity_list.remove(elem)
                 for key, value in instance.iteritems():
                     try:
                         if elem[key] != value:
@@ -58,3 +59,10 @@ class JsonDatastore(datastore.Datastore):
 
     def __has_entity(self, entity):
         return entity in self._data
+
+    def filter(self, entity, key, values=[]):
+        if self.__has_entity(entity):
+            if key is None or len(values) == 0:
+                return self._data[entity]
+
+            return [elem for elem in self._data[entity] if elem[key] in values]
