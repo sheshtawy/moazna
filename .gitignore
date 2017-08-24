@@ -3,6 +3,7 @@
 
 # coverage
 cover/
+coverage.xml
 
 # IPython
 *.ipynb
