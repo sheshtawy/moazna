@@ -18,12 +18,12 @@ class Ledger:
 
     def record_txn(self, amount, payerName, recipientName, date):
         """Record a new txn.
-        
+
         Behavior:
             - This function should lookup the payer and recipient accounts in 
             the database first. If any of them is not found, new accounts will be
             created since it's a new account joining the system
-            
+
             - Payer account will be debited and recipient account will be credited based
             on the assumption that the accounts are of the type 'Personal' according to
             this document https://en.wikipedia.org/wiki/Debits_and_credits
@@ -48,11 +48,13 @@ class Ledger:
 
         payer.credit(amount)
         self.account_repository.update(payer)
-        self.account_repository.update_balance_history(payer.name, payer.balance, date)
+        self.account_repository.update_balance_history(
+            payer.name, payer.balance, date)
 
         recipient.debit(amount)
         self.account_repository.update(recipient)
-        self.account_repository.update_balance_history(recipient.name, recipient.balance, date)
+        self.account_repository.update_balance_history(
+            recipient.name, recipient.balance, date)
 
         return txn
 

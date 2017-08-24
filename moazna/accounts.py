@@ -32,7 +32,7 @@ class Account(object):
 
     def debit(self, amount):
         """Increase the account's balance.
-        
+
         The account is assumed to be of type 'Personal' according to 
         this document https://en.wikipedia.org/wiki/Debits_and_credits
         """
@@ -40,7 +40,7 @@ class Account(object):
 
     def credit(self, amount):
         """Decrease the account's balance.
-        
+
         The account is assumed to be of type 'Personal' according to 
         this document https://en.wikipedia.org/wiki/Debits_and_credits
         """
@@ -50,7 +50,7 @@ class Account(object):
     @classmethod
     def from_dict(cls, data):
         """Create an Account instance from dict.
-        
+
         :param data: Dict containing name, balance and possibly balance_history attrs
         :returns: Account instance
         """
@@ -62,13 +62,13 @@ class Account(object):
 
     def update_history(self, balance, date):
         """Update account's balance history.
-        
+
         NOTE: Date granuality is by day
 
         :param balance: balance amount
         :param date: date of recording the balance amount
         """
-        try: 
+        try:
             self._balance_history.remove({
                 'date': date,
                 'balance': balance
@@ -86,7 +86,7 @@ class Account(object):
 
     def get_balance(self, date=None):
         """Retrieve account's balance in a specific date.
-        
+
         :param date: date of the desired balance entry
         :returns: balance amount if the entry exists, defaults to the current balance
         """

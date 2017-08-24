@@ -49,7 +49,7 @@ class TransactionRepository(object):
 
     def create(self, amount, payerName, recipientName, date):
         """Create a new transaction and save to the datastore.
-        
+
         :param amount: transaction amount
         :param payerName: payer account name
         :param recipientName: recipient account name
@@ -72,18 +72,18 @@ class TransactionRepository(object):
 
     def get_by_id(self, txnId):
         """Retrieve transaction by id.
-        
+
         :param txnId: transaction id
         :returns: Transaction instance if found or None otherwise
         """
-        
+
         record = self._datastore.retrieve(self.__entity, self.__id_attr, txnId)
         if record is not None:
             return Transaction.from_dict(record)
 
     def list_by_name(self, name):
         """List all transactions containing a name as either payer or recipient.
-        
+
         :param name: account name
         :returns: List of Transaction instances if found or empty list otherwise
         """
@@ -94,11 +94,11 @@ class TransactionRepository(object):
 
     def list_by_payer(self, payerName):
         """List all transactions by a payer.
-        
+
         :param payerName: payer account name
         :returns: List of Transaction instances if found or empty list otherwise
         """
-        
+
         records = self._datastore.filter(
             self.__entity, 'payer_name', payerName)
         txns = []
@@ -110,11 +110,11 @@ class TransactionRepository(object):
 
     def list_by_recipient(self, recipientName):
         """List all transactions by a recipient.
-        
+
         :param recipientName: payer account name
         :returns: List of Transaction instances if found or empty list otherwise
         """
-        
+
         records = self._datastore.filter(
             self.__entity, 'recipient_name', recipientName)
         txns = []
@@ -139,6 +139,6 @@ class TransactionRepository(object):
 
         :param instance: Transaction instance with the updated value(s)
         """
-        
+
         self._datastore.delete(
             self.__entity, self.__id_attr, dict(instance)[self.__id_attr])
