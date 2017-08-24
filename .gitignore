@@ -1,6 +1,9 @@
 # VS Code
 .vscode/
 
+# coverage
+cover/
+
 # IPython
 *.ipynb
 .ipynb_checkpoints
