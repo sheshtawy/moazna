@@ -8,9 +8,12 @@ class Ledger:
     def __init__(self, datastore):
         '''
         Repository classes used to interact with the datastore/database following
-        the DAO model.Datastore connection is injected here as a dependency for 
+        the DAO model. Datastore connection is injected here as a dependency for 
         all repository classes. This is meant to decouple the ledger logic from 
         the data persistance logic.
+        
+        NOTE: I built a JSON Datastore to facilitate testing. But using this design
+              Any database/datastore could be used.
         '''
         self._datastore = datastore
         self.account_repository = AccountRepository(self._datastore)
